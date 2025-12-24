@@ -115,7 +115,6 @@ export default function MessageBubble({ message, messageIndex, language = 'pt-BR
           )}
           </div>
         )}
-      </div>
 
         {/* Rating for assistant responses */}
         {!isUser && !isParadox && onRate && (
