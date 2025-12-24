@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { User, Bot } from 'lucide-react';
+import { User, Bot, Shield } from 'lucide-react';
 import { format } from 'date-fns';
+import { Button } from '@/components/ui/button';
+import CRVBadge from './CRVBadge';
+import AuditTrailModal from './AuditTrailModal';
 
-export default function MessageBubble({ message }) {
+export default function MessageBubble({ message, language = 'pt-BR' }) {
   const isUser = message.role === 'user';
+  const [auditTrailOpen, setAuditTrailOpen] = useState(false);
 
   return (
     <div className={`flex gap-4 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
@@ -23,6 +27,13 @@ export default function MessageBubble({ message }) {
 
       {/* Message Content */}
       <div className={`flex-1 max-w-[85%] ${isUser ? 'flex flex-col items-end' : ''}`}>
+        {/* CRV Badge for assistant messages */}
+        {!isUser && message.crv_score && (
+          <div className="mb-2">
+            <CRVBadge crvScore={message.crv_score} language={language} />
+          </div>
+        )}
+        
         <div className={`rounded-2xl px-5 py-4 ${
           isUser 
             ? 'bg-gradient-to-br from-slate-700 to-slate-800 text-white' 
@@ -63,12 +74,42 @@ export default function MessageBubble({ message }) {
             </ReactMarkdown>
           )}
         </div>
-        {message.timestamp && (
-          <div className="text-xs text-slate-500 mt-1 px-2">
-            {format(message.timestamp, 'HH:mm')}
-          </div>
-        )}
+        
+        {/* Footer with timestamp and audit trail */}
+        <div className="flex items-center gap-3 mt-2 px-2">
+          {message.timestamp && (
+            <span className="text-xs text-slate-500">
+              {format(message.timestamp, 'HH:mm')}
+            </span>
+          )}
+          
+          {/* Audit Trail Button for assistant messages */}
+          {!isUser && message.sources && message.sources.length > 0 && (
+            <>
+              <div className="w-px h-3 bg-slate-700" />
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setAuditTrailOpen(true)}
+                className="h-6 px-2 text-xs text-slate-400 hover:text-cyan-400 hover:bg-slate-800"
+              >
+                <Shield className="w-3 h-3 mr-1" />
+                {language === 'pt-BR' ? 'Rastreabilidade' : 'Audit Trail'}
+              </Button>
+            </>
+          )}
+        </div>
       </div>
+
+      {/* Audit Trail Modal */}
+      {!isUser && message.sources && (
+        <AuditTrailModal
+          isOpen={auditTrailOpen}
+          onClose={() => setAuditTrailOpen(false)}
+          sources={message.sources}
+          language={language}
+        />
+      )}
     </div>
   );
 }

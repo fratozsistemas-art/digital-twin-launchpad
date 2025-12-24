@@ -131,13 +131,46 @@ export default function Consultation({ language = 'pt-BR' }) {
     // Simulate AI response (replace with actual API call)
     setTimeout(() => {
       const sampleResponse = language === 'pt-BR'
-        ? `Prezado interlocutor,\n\nPermita-me contextualizar sua pergunta no cenário atual. A questão que você levanta toca em aspectos fundamentais da reconfiguração geoeconômica global.\n\n**Três pontos centrais:**\n\n1. **Contexto Histórico**: Estamos atravessando um "time-out" na globalização, um momento de reavaliação das cadeias globais de valor.\n\n2. **Competitividade Sistêmica**: O Brasil possui vantagens comparativas únicas - somos a "Arábia Saudita dos alimentos" e detemos as três coroas estratégicas: alimentos, energia e sustentabilidade.\n\n3. **Diplomacia Pragmática**: A estratégia ótima é "surfar três ondas" simultaneamente - EUA, China e União Europeia - sem viés ideológico, com foco em ganhos comerciais concretos.\n\nEstou à disposição para aprofundar qualquer um desses aspectos.\n\nCom distintíssima consideração,\nMarcos Prado Troyjo`
-        : `Dear interlocutor,\n\nAllow me to contextualize your question within the current scenario. The issue you raise touches on fundamental aspects of the global geoeconomic reconfiguration.\n\n**Three central points:**\n\n1. **Historical Context**: We are going through a "time-out" in globalization, a moment of reassessment of global value chains.\n\n2. **Systemic Competitiveness**: Brazil has unique comparative advantages - we are the "Saudi Arabia of food" and hold three strategic crowns: food, energy, and sustainability.\n\n3. **Pragmatic Diplomacy**: The optimal strategy is to "surf three waves" simultaneously - USA, China, and European Union - without ideological bias, focusing on concrete commercial gains.\n\nI remain at your disposal to deepen any of these aspects.\n\nWith distinguished consideration,\nMarcos Prado Troyjo`;
+      ? `Prezado interlocutor,\n\nPermita-me contextualizar sua pergunta no cenário atual. A questão que você levanta toca em aspectos fundamentais da reconfiguração geoeconômica global.\n\n**Três pontos centrais:**\n\n1. **Contexto Histórico**: Estamos atravessando um "time-out" na globalização, um momento de reavaliação das cadeias globais de valor.\n\n2. **Competitividade Sistêmica**: O Brasil possui vantagens comparativas únicas - somos a "Arábia Saudita dos alimentos" e detemos as três coroas estratégicas: alimentos, energia e sustentabilidade.\n\n3. **Diplomacia Pragmática**: A estratégia ótima é "surfar três ondas" simultaneamente - EUA, China e União Europeia - sem viés ideológico, com foco em ganhos comerciais concretos.\n\nEstou à disposição para aprofundar qualquer um desses aspectos.\n\nCom distintíssima consideração,\nMarcos Prado Troyjo`
+      : `Dear interlocutor,\n\nAllow me to contextualize your question within the current scenario. The issue you raise touches on fundamental aspects of the global geoeconomic reconfiguration.\n\n**Three central points:**\n\n1. **Historical Context**: We are going through a "time-out" in globalization, a moment of reassessment of global value chains.\n\n2. **Systemic Competitiveness**: Brazil has unique comparative advantages - we are the "Saudi Arabia of food" and hold three strategic crowns: food, energy, and sustainability.\n\n3. **Pragmatic Diplomacy**: The optimal strategy is to "surf three waves" simultaneously - USA, China, and European Union - without ideological bias, focusing on concrete commercial gains.\n\nI remain at your disposal to deepen any of these aspects.\n\nWith distinguished consideration,\nMarcos Prado Troyjo`;
+
+      // Simulate CRV scoring and audit trail
+      const crvScore = {
+      confidence: Math.floor(Math.random() * 20) + 80, // 80-100
+      risk: Math.floor(Math.random() * 30) + 10, // 10-40
+      value: Math.floor(Math.random() * 15) + 85 // 85-100
+      };
+
+      const sources = [
+      {
+      type: 'knowledge_base',
+      title: 'Nação-Comerciante: Uma Piscina de Piranha em Águas Globalizadas',
+      url: '#',
+      confidence: 95,
+      excerpt: 'A análise histórica demonstra que o Brasil possui vantagens comparativas estruturais em três pilares: alimentos, energia e sustentabilidade.'
+      },
+      {
+      type: 'bloomberg',
+      title: 'Global Trade Flows Analysis - December 2025',
+      url: '#',
+      confidence: 92,
+      excerpt: 'Current macroeconomic data indicates a temporary pause in globalization trends, with regional trade blocs gaining prominence.'
+      },
+      {
+      type: 'oxford_analytics',
+      title: 'Geopolitical Risk Assessment: Latin America',
+      url: '#',
+      confidence: 88,
+      excerpt: 'Brazil\'s strategic positioning allows for simultaneous engagement with multiple economic spheres without ideological constraints.'
+      }
+      ];
 
       setMessages(prev => [...prev, {
-        role: 'assistant',
-        content: sampleResponse,
-        timestamp: new Date()
+      role: 'assistant',
+      content: sampleResponse,
+      timestamp: new Date(),
+      crv_score: crvScore,
+      sources: sources
       }]);
       setIsLoading(false);
     }, 2000);
@@ -197,7 +230,7 @@ export default function Consultation({ language = 'pt-BR' }) {
               {/* Messages Area */}
               <div className="flex-1 overflow-y-auto p-6 space-y-6">
                 {messages.map((message, index) => (
-                  <MessageBubble key={index} message={message} />
+                  <MessageBubble key={index} message={message} language={language} />
                 ))}
                 {isLoading && (
                   <div className="flex items-center gap-3 text-slate-400">
