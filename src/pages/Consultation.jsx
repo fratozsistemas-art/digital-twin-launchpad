@@ -8,15 +8,19 @@ import {
   Building,
   Coins,
   BarChart3,
-  Loader2
+  Loader2,
+  Share2,
+  FolderOpen
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import MessageBubble from '@/components/chat/MessageBubble';
 import TopicCard from '@/components/chat/TopicCard';
 import PersonaSelector from '@/components/chat/PersonaSelector';
+import FolderManager from '@/components/consultation/FolderManager';
+import ShareDialog from '@/components/consultation/ShareDialog';
 import { base44 } from '@/api/base44Client';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 export default function Consultation({ language = 'pt-BR' }) {
   const [messages, setMessages] = useState([]);
@@ -24,7 +28,11 @@ export default function Consultation({ language = 'pt-BR' }) {
   const [isLoading, setIsLoading] = useState(false);
   const [paradoxResolutions, setParadoxResolutions] = useState([]);
   const [selectedPersona, setSelectedPersona] = useState('professor');
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [currentFolderId, setCurrentFolderId] = useState(null);
+  const [currentConsultationId, setCurrentConsultationId] = useState(null);
   const messagesEndRef = useRef(null);
+  const queryClient = useQueryClient();
 
   // Fetch user profile for access level
   const { data: user } = useQuery({
@@ -304,6 +312,13 @@ export default function Consultation({ language = 'pt-BR' }) {
     }, 1500);
   };
 
+  const handleRateResponse = (messageIndex, rating, feedback) => {
+    setMessages(prev => prev.map((msg, idx) => 
+      idx === messageIndex ? { ...msg, rating, feedback } : msg
+    ));
+    // TODO: Save to consultation record
+  };
+
   return (
     <div className="min-h-screen py-12">
       <div className="max-w-7xl mx-auto px-6">
@@ -331,6 +346,15 @@ export default function Consultation({ language = 'pt-BR' }) {
             className="lg:col-span-1"
           >
             <div className="sticky top-28 space-y-6">
+              {/* Folder Manager */}
+              <div className="p-4 rounded-xl bg-slate-900/50 border border-slate-800">
+                <FolderManager
+                  currentFolderId={currentFolderId}
+                  onFolderChange={setCurrentFolderId}
+                  language={language}
+                />
+              </div>
+
               {/* Persona Selector */}
               <PersonaSelector
                 selectedPersona={selectedPersona}
@@ -366,14 +390,31 @@ export default function Consultation({ language = 'pt-BR' }) {
             className="lg:col-span-2"
           >
             <div className="bg-slate-900/50 rounded-2xl border border-slate-800 overflow-hidden flex flex-col" style={{ height: 'calc(100vh - 250px)' }}>
+              {/* Header with Share Button */}
+              {messages.length > 1 && (
+                <div className="border-b border-slate-800 p-4 bg-slate-900/80 flex justify-end">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setShareDialogOpen(true)}
+                    className="gap-2"
+                  >
+                    <Share2 className="w-4 h-4" />
+                    {language === 'pt-BR' ? 'Compartilhar' : 'Share'}
+                  </Button>
+                </div>
+              )}
+
               {/* Messages Area */}
               <div className="flex-1 overflow-y-auto p-6 space-y-6">
                 {messages.map((message, index) => (
                   <MessageBubble 
-                    key={index} 
+                    key={index}
+                    messageIndex={index}
                     message={message} 
                     language={language}
                     onParadoxResolve={handleParadoxResolve}
+                    onRate={handleRateResponse}
                   />
                 ))}
                 {isLoading && (
@@ -419,6 +460,16 @@ export default function Consultation({ language = 'pt-BR' }) {
             </div>
           </motion.div>
         </div>
+
+        {/* Share Dialog */}
+        {currentConsultationId && (
+          <ShareDialog
+            consultation={{ id: currentConsultationId, title: 'Current Consultation' }}
+            isOpen={shareDialogOpen}
+            onClose={() => setShareDialogOpen(false)}
+            language={language}
+          />
+        )}
       </div>
     </div>
   );
