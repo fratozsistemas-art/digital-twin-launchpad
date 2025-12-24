@@ -1,23 +1,23 @@
 import About from './pages/About';
 import Consultation from './pages/Consultation';
-import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
-import Profile from './pages/Profile';
 import DataSources from './pages/DataSources';
-import GovernancePanel from './pages/GovernancePanel';
 import ExternalIntegrations from './pages/ExternalIntegrations';
+import GovernancePanel from './pages/GovernancePanel';
+import Home from './pages/Home';
+import Profile from './pages/Profile';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "About": About,
     "Consultation": Consultation,
-    "Home": Home,
     "Dashboard": Dashboard,
-    "Profile": Profile,
     "DataSources": DataSources,
-    "GovernancePanel": GovernancePanel,
     "ExternalIntegrations": ExternalIntegrations,
+    "GovernancePanel": GovernancePanel,
+    "Home": Home,
+    "Profile": Profile,
 }
 
 export const pagesConfig = {

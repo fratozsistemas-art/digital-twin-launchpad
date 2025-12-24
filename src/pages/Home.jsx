@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { motion } from 'framer-motion';
+import { base44 } from '@/api/base44Client';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import OnboardingWizard from '@/components/onboarding/OnboardingWizard';
 import { 
   ArrowRight, 
   Brain, 
@@ -16,6 +19,57 @@ import {
 import { Button } from '@/components/ui/button';
 
 export default function Home({ language = 'pt-BR' }) {
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const queryClient = useQueryClient();
+
+  // Fetch user
+  const { data: user } = useQuery({
+    queryKey: ['current-user'],
+    queryFn: () => base44.auth.me(),
+  });
+
+  // Fetch user profile
+  const { data: userProfile } = useQuery({
+    queryKey: ['user-profile', user?.email],
+    queryFn: async () => {
+      const profiles = await base44.entities.UserProfile.filter({ created_by: user.email });
+      return profiles[0] || null;
+    },
+    enabled: !!user?.email,
+  });
+
+  // Check if onboarding should be shown
+  useEffect(() => {
+    if (userProfile && !userProfile.onboarding_completed) {
+      setShowOnboarding(true);
+    }
+  }, [userProfile]);
+
+  // Complete onboarding
+  const completeOnboardingMutation = useMutation({
+    mutationFn: async (preferences) => {
+      if (userProfile?.id) {
+        return await base44.entities.UserProfile.update(userProfile.id, {
+          ...preferences,
+          onboarding_completed: true
+        });
+      } else {
+        return await base44.entities.UserProfile.create({
+          ...preferences,
+          onboarding_completed: true
+        });
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['user-profile'] });
+      setShowOnboarding(false);
+    },
+  });
+
+  const handleCompleteOnboarding = (preferences) => {
+    completeOnboardingMutation.mutate(preferences);
+  };
+
   const content = {
     'pt-BR': {
       hero: {
@@ -157,6 +211,14 @@ export default function Home({ language = 'pt-BR' }) {
 
   return (
     <div className="min-h-screen">
+      {/* Onboarding Wizard */}
+      {showOnboarding && (
+        <OnboardingWizard
+          onComplete={handleCompleteOnboarding}
+          initialLanguage={language}
+        />
+      )}
+
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
         {/* Animated background */}

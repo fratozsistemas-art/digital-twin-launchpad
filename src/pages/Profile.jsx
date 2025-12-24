@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
+import OnboardingChecklist from '@/components/onboarding/OnboardingChecklist';
 import { 
   User, 
   Building, 
@@ -141,9 +142,29 @@ export default function Profile({ language = 'pt-BR' }) {
       }
     },
     enabled: !!user
-  });
+    });
 
-  // Update mutation
+    // Fetch consultations for checklist
+    const { data: consultations } = useQuery({
+    queryKey: ['consultations', user?.email],
+    queryFn: async () => {
+      if (!user) return [];
+      return await base44.entities.Consultation.filter({ created_by: user.email });
+    },
+    enabled: !!user
+    });
+
+    // Fetch data sources for checklist
+    const { data: dataSources } = useQuery({
+    queryKey: ['data-sources', user?.email],
+    queryFn: async () => {
+      if (!user) return [];
+      return await base44.entities.DataSource.filter({ created_by: user.email });
+    },
+    enabled: !!user
+    });
+
+    // Update mutation
   const updateMutation = useMutation({
     mutationFn: (data) => base44.entities.UserProfile.update(userProfile.id, data),
     onSuccess: () => {
@@ -221,6 +242,23 @@ export default function Profile({ language = 'pt-BR' }) {
           </h1>
           <p className="text-slate-400 text-lg">{t.subtitle}</p>
         </motion.div>
+
+        {/* Onboarding Checklist */}
+        {userProfile && !userProfile.onboarding_completed && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="mb-8"
+          >
+            <OnboardingChecklist
+              userProfile={userProfile}
+              consultations={consultations}
+              dataSources={dataSources}
+              language={language}
+            />
+          </motion.div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Basic Information */}
