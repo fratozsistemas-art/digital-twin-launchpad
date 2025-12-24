@@ -6,6 +6,7 @@ import ExternalIntegrations from './pages/ExternalIntegrations';
 import GovernancePanel from './pages/GovernancePanel';
 import Home from './pages/Home';
 import Profile from './pages/Profile';
+import KnowledgeBase from './pages/KnowledgeBase';
 import __Layout from './Layout.jsx';
 
 
@@ -18,6 +19,7 @@ export const PAGES = {
     "GovernancePanel": GovernancePanel,
     "Home": Home,
     "Profile": Profile,
+    "KnowledgeBase": KnowledgeBase,
 }
 
 export const pagesConfig = {

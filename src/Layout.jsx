@@ -12,6 +12,7 @@ export default function Layout({ children, currentPageName }) {
       home: 'Início',
       dashboard: 'Painel',
       consultation: 'Consulta',
+      knowledgeBase: 'Base de Conhecimento',
       dataSources: 'Fontes de Dados',
       integrations: 'Integrações',
       governance: 'Governança',
@@ -22,6 +23,7 @@ export default function Layout({ children, currentPageName }) {
       home: 'Home',
       dashboard: 'Dashboard',
       consultation: 'Consultation',
+      knowledgeBase: 'Knowledge Base',
       dataSources: 'Data Sources',
       integrations: 'Integrations',
       governance: 'Governance',
@@ -176,6 +178,13 @@ export default function Layout({ children, currentPageName }) {
                 className="block text-slate-300 hover:text-white py-2"
               >
                 {t.consultation}
+              </Link>
+              <Link 
+                to={createPageUrl('KnowledgeBase')}
+                onClick={() => setMobileMenuOpen(false)}
+                className="block text-slate-300 hover:text-white py-2"
+              >
+                {t.knowledgeBase}
               </Link>
               <Link 
                 to={createPageUrl('DataSources')}
