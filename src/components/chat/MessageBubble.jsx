@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import CRVBadge from './CRVBadge';
 import AuditTrailModal from './AuditTrailModal';
 import ParadoxResolution from './ParadoxResolution';
+import ResponseRating from '../consultation/ResponseRating';
 
 export default function MessageBubble({ message, messageIndex, language = 'pt-BR', onParadoxResolve, onRate }) {
   const isUser = message.role === 'user';
@@ -116,27 +117,27 @@ export default function MessageBubble({ message, messageIndex, language = 'pt-BR
         )}
       </div>
 
-      {/* Rating for assistant responses */}
-      {!isUser && !isParadox && onRate && (
-        <ResponseRating
-          messageIndex={messageIndex}
-          initialRating={message.rating}
-          initialFeedback={message.feedback}
-          onRate={onRate}
-          language={language}
-        />
-      )}
+        {/* Rating for assistant responses */}
+        {!isUser && !isParadox && onRate && (
+          <ResponseRating
+            messageIndex={messageIndex}
+            initialRating={message.rating}
+            initialFeedback={message.feedback}
+            onRate={onRate}
+            language={language}
+          />
+        )}
       </div>
 
       {/* Audit Trail Modal */}
       {!isUser && message.sources && (
-      <AuditTrailModal
-        isOpen={auditTrailOpen}
-        onClose={() => setAuditTrailOpen(false)}
-        sources={message.sources}
-        language={language}
-      />
+        <AuditTrailModal
+          isOpen={auditTrailOpen}
+          onClose={() => setAuditTrailOpen(false)}
+          sources={message.sources}
+          language={language}
+        />
       )}
-      </div>
-      );
-      }
+    </div>
+  );
+}
