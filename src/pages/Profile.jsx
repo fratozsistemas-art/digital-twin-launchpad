@@ -200,7 +200,7 @@ export default function Profile({ language = 'pt-BR' }) {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-slate-400">Loading...</p>
+          <p className="text-slate-400">{language === 'pt-BR' ? 'Carregando...' : 'Loading...'}</p>
         </div>
       </div>
     );
@@ -242,7 +242,7 @@ export default function Profile({ language = 'pt-BR' }) {
                   value={formData.company_name || ''}
                   onChange={(e) => setFormData({ ...formData, company_name: e.target.value })}
                   className="bg-slate-800/50 border-slate-700 text-white"
-                  placeholder="Your company"
+                  placeholder={language === 'pt-BR' ? 'Sua empresa' : 'Your company'}
                 />
               </div>
 
