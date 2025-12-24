@@ -5,10 +5,14 @@ import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import CRVBadge from './CRVBadge';
 import AuditTrailModal from './AuditTrailModal';
+import ParadoxResolution from './ParadoxResolution';
 
-export default function MessageBubble({ message, language = 'pt-BR' }) {
+export default function MessageBubble({ message, language = 'pt-BR', onParadoxResolve }) {
   const isUser = message.role === 'user';
   const [auditTrailOpen, setAuditTrailOpen] = useState(false);
+  
+  // Check if message is a paradox scenario
+  const isParadox = message.type === 'paradox' && message.paradox;
 
   return (
     <div className={`flex gap-4 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
@@ -34,14 +38,22 @@ export default function MessageBubble({ message, language = 'pt-BR' }) {
           </div>
         )}
         
-        <div className={`rounded-2xl px-5 py-4 ${
-          isUser 
-            ? 'bg-gradient-to-br from-slate-700 to-slate-800 text-white' 
-            : 'bg-slate-900 border border-slate-800 text-slate-200'
-        }`}>
-          {isUser ? (
-            <p className="leading-relaxed whitespace-pre-wrap">{message.content}</p>
-          ) : (
+        {/* Paradox Resolution UI */}
+        {isParadox ? (
+          <ParadoxResolution
+            paradox={message.paradox}
+            onResolve={(choice) => onParadoxResolve && onParadoxResolve(message.paradox.paradox_id, choice)}
+            language={language}
+          />
+        ) : (
+          <div className={`rounded-2xl px-5 py-4 ${
+            isUser 
+              ? 'bg-gradient-to-br from-slate-700 to-slate-800 text-white' 
+              : 'bg-slate-900 border border-slate-800 text-slate-200'
+          }`}>
+            {isUser ? (
+              <p className="leading-relaxed whitespace-pre-wrap">{message.content}</p>
+            ) : (
             <ReactMarkdown
               className="prose prose-sm prose-invert max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
               components={{
@@ -72,11 +84,13 @@ export default function MessageBubble({ message, language = 'pt-BR' }) {
             >
               {message.content}
             </ReactMarkdown>
-          )}
-        </div>
+            )}
+          </div>
+        )}
         
         {/* Footer with timestamp and audit trail */}
-        <div className="flex items-center gap-3 mt-2 px-2">
+        {!isParadox && (
+          <div className="flex items-center gap-3 mt-2 px-2">
           {message.timestamp && (
             <span className="text-xs text-slate-500">
               {format(message.timestamp, 'HH:mm')}
@@ -98,7 +112,8 @@ export default function MessageBubble({ message, language = 'pt-BR' }) {
               </Button>
             </>
           )}
-        </div>
+          </div>
+        )}
       </div>
 
       {/* Audit Trail Modal */}
