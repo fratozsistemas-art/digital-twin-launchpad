@@ -13,6 +13,7 @@ export default function Layout({ children, currentPageName }) {
       dashboard: 'Painel',
       consultation: 'Consulta',
       dataSources: 'Fontes de Dados',
+      governance: 'Governança',
       about: 'Sobre',
       language: 'Idioma'
     },
@@ -21,6 +22,7 @@ export default function Layout({ children, currentPageName }) {
       dashboard: 'Dashboard',
       consultation: 'Consultation',
       dataSources: 'Data Sources',
+      governance: 'Governance',
       about: 'About',
       language: 'Language'
     }
@@ -159,6 +161,13 @@ export default function Layout({ children, currentPageName }) {
                 className="block text-slate-300 hover:text-white py-2"
               >
                 {t.dataSources}
+              </Link>
+              <Link 
+                to={createPageUrl('GovernancePanel')}
+                onClick={() => setMobileMenuOpen(false)}
+                className="block text-slate-300 hover:text-white py-2"
+              >
+                {t.governance}
               </Link>
               <Link 
                 to={createPageUrl('About')}
