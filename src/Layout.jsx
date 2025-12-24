@@ -12,6 +12,7 @@ export default function Layout({ children, currentPageName }) {
       home: 'Início',
       dashboard: 'Painel',
       consultation: 'Consulta',
+      dataSources: 'Fontes de Dados',
       about: 'Sobre',
       language: 'Idioma'
     },
@@ -19,6 +20,7 @@ export default function Layout({ children, currentPageName }) {
       home: 'Home',
       dashboard: 'Dashboard',
       consultation: 'Consultation',
+      dataSources: 'Data Sources',
       about: 'About',
       language: 'Language'
     }
@@ -84,6 +86,16 @@ export default function Layout({ children, currentPageName }) {
                 {t.consultation}
               </Link>
               <Link 
+                to={createPageUrl('DataSources')} 
+                className={`text-sm font-medium transition-colors ${
+                  currentPageName === 'DataSources' 
+                    ? 'text-cyan-400' 
+                    : 'text-slate-300 hover:text-white'
+                }`}
+              >
+                {t.dataSources}
+              </Link>
+              <Link 
                 to={createPageUrl('About')} 
                 className={`text-sm font-medium transition-colors ${
                   currentPageName === 'About' 
@@ -140,6 +152,13 @@ export default function Layout({ children, currentPageName }) {
                 className="block text-slate-300 hover:text-white py-2"
               >
                 {t.consultation}
+              </Link>
+              <Link 
+                to={createPageUrl('DataSources')}
+                onClick={() => setMobileMenuOpen(false)}
+                className="block text-slate-300 hover:text-white py-2"
+              >
+                {t.dataSources}
               </Link>
               <Link 
                 to={createPageUrl('About')}

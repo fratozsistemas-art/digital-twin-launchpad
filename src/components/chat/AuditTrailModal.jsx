@@ -18,7 +18,8 @@ export default function AuditTrailModal({ isOpen, onClose, sources, language = '
         external_data: 'Dados Externos',
         real_time_feed: 'Feed em Tempo Real',
         bloomberg: 'Bloomberg Terminal',
-        oxford_analytics: 'Oxford Analytics'
+        oxford_analytics: 'Oxford Analytics',
+        user_provided: 'Seus Dados Corporativos'
       },
       confidence: 'Confiança da Fonte',
       viewSource: 'Ver Fonte'
@@ -32,7 +33,8 @@ export default function AuditTrailModal({ isOpen, onClose, sources, language = '
         external_data: 'External Data',
         real_time_feed: 'Real-Time Feed',
         bloomberg: 'Bloomberg Terminal',
-        oxford_analytics: 'Oxford Analytics'
+        oxford_analytics: 'Oxford Analytics',
+        user_provided: 'Your Corporate Data'
       },
       confidence: 'Source Confidence',
       viewSource: 'View Source'
@@ -46,7 +48,8 @@ export default function AuditTrailModal({ isOpen, onClose, sources, language = '
     external_data: Database,
     real_time_feed: Globe,
     bloomberg: TrendingUp,
-    oxford_analytics: Building
+    oxford_analytics: Building,
+    user_provided: FileText
   };
 
   const sourceColors = {
@@ -54,7 +57,8 @@ export default function AuditTrailModal({ isOpen, onClose, sources, language = '
     external_data: 'from-purple-600 to-pink-500',
     real_time_feed: 'from-green-600 to-emerald-500',
     bloomberg: 'from-amber-600 to-orange-500',
-    oxford_analytics: 'from-indigo-600 to-violet-500'
+    oxford_analytics: 'from-indigo-600 to-violet-500',
+    user_provided: 'from-cyan-600 to-blue-500'
   };
 
   if (!sources || sources.length === 0) {
@@ -106,8 +110,13 @@ export default function AuditTrailModal({ isOpen, onClose, sources, language = '
                           {source.title}
                         </h3>
                         <div className="flex items-center gap-2">
-                          <span className="text-xs px-2 py-0.5 rounded-md bg-slate-700/50 text-slate-300 capitalize">
+                          <span className={`text-xs px-2 py-0.5 rounded-md ${
+                            source.type === 'user_provided' 
+                              ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30' 
+                              : 'bg-slate-700/50 text-slate-300'
+                          } capitalize`}>
                             {t.sourceTypes[source.type] || source.type}
+                            {source.type === 'user_provided' && ' 🔒'}
                           </span>
                           {source.confidence && (
                             <div className="flex items-center gap-1.5">
