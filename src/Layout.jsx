@@ -13,6 +13,7 @@ export default function Layout({ children, currentPageName }) {
       dashboard: 'Painel',
       consultation: 'Consulta',
       dataSources: 'Fontes de Dados',
+      integrations: 'Integrações',
       governance: 'Governança',
       about: 'Sobre',
       language: 'Idioma'
@@ -22,6 +23,7 @@ export default function Layout({ children, currentPageName }) {
       dashboard: 'Dashboard',
       consultation: 'Consultation',
       dataSources: 'Data Sources',
+      integrations: 'Integrations',
       governance: 'Governance',
       about: 'About',
       language: 'Language'
@@ -98,6 +100,16 @@ export default function Layout({ children, currentPageName }) {
                 {t.dataSources}
               </Link>
               <Link 
+                to={createPageUrl('ExternalIntegrations')} 
+                className={`text-sm font-medium transition-colors ${
+                  currentPageName === 'ExternalIntegrations' 
+                    ? 'text-cyan-400' 
+                    : 'text-slate-300 hover:text-white'
+                }`}
+              >
+                {t.integrations}
+              </Link>
+              <Link 
                 to={createPageUrl('GovernancePanel')} 
                 className={`text-sm font-medium transition-colors ${
                   currentPageName === 'GovernancePanel' 
@@ -171,6 +183,13 @@ export default function Layout({ children, currentPageName }) {
                 className="block text-slate-300 hover:text-white py-2"
               >
                 {t.dataSources}
+              </Link>
+              <Link 
+                to={createPageUrl('ExternalIntegrations')}
+                onClick={() => setMobileMenuOpen(false)}
+                className="block text-slate-300 hover:text-white py-2"
+              >
+                {t.integrations}
               </Link>
               <Link 
                 to={createPageUrl('GovernancePanel')}

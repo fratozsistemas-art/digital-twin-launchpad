@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
 import DataSources from './pages/DataSources';
 import GovernancePanel from './pages/GovernancePanel';
+import ExternalIntegrations from './pages/ExternalIntegrations';
 import __Layout from './Layout.jsx';
 
 
@@ -16,6 +17,7 @@ export const PAGES = {
     "Profile": Profile,
     "DataSources": DataSources,
     "GovernancePanel": GovernancePanel,
+    "ExternalIntegrations": ExternalIntegrations,
 }
 
 export const pagesConfig = {
