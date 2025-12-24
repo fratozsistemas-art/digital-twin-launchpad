@@ -310,7 +310,7 @@ export default function Home({ language = 'pt-BR' }) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="text-center mb-20"
+            className="text-center mb-12"
           >
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
               {t.pillars.title}
@@ -318,6 +318,24 @@ export default function Home({ language = 'pt-BR' }) {
             <p className="text-xl text-slate-400 max-w-3xl mx-auto">
               {t.pillars.subtitle}
             </p>
+          </motion.div>
+
+          {/* Visual Diagram */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="mb-16 relative"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-cyan-500/10 rounded-3xl blur-3xl" />
+            <div className="relative bg-slate-900/80 rounded-3xl border border-slate-800 p-8">
+              <img 
+                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/694c394f71a54746be4d8e51/4f370e2c8_MarcosTroyjo-DigitalTwin.jpg"
+                alt="Blueprint for AI Persona"
+                className="w-full rounded-xl shadow-2xl"
+              />
+            </div>
           </motion.div>
 
           <div className="grid md:grid-cols-2 gap-8">

@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import CognitiveArchitecture from '@/components/about/CognitiveArchitecture';
 import { Award, BookOpen, Briefcase, GraduationCap, Globe, Building2 } from 'lucide-react';
 
 export default function About({ language = 'pt-BR' }) {
@@ -209,7 +210,17 @@ export default function About({ language = 'pt-BR' }) {
             ))}
           </div>
         </motion.section>
-      </div>
-    </div>
-  );
-}
+
+        {/* Cognitive Architecture Section */}
+        <motion.section
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.6 }}
+          className="mt-20"
+        >
+          <CognitiveArchitecture language={language} />
+        </motion.section>
+        </div>
+        </div>
+        );
+        }
