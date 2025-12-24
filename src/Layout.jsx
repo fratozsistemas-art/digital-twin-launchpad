@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from './utils';
-import { Globe, Menu, X } from 'lucide-react';
+import { Globe, Menu, X, LayoutDashboard } from 'lucide-react';
 
 export default function Layout({ children, currentPageName }) {
   const [language, setLanguage] = useState('pt-BR');
@@ -10,12 +10,14 @@ export default function Layout({ children, currentPageName }) {
   const translations = {
     'pt-BR': {
       home: 'Início',
+      dashboard: 'Painel',
       consultation: 'Consulta',
       about: 'Sobre',
       language: 'Idioma'
     },
     'en-US': {
       home: 'Home',
+      dashboard: 'Dashboard',
       consultation: 'Consultation',
       about: 'About',
       language: 'Language'
@@ -59,6 +61,17 @@ export default function Layout({ children, currentPageName }) {
                 }`}
               >
                 {t.home}
+              </Link>
+              <Link 
+                to={createPageUrl('Dashboard')} 
+                className={`text-sm font-medium transition-colors flex items-center gap-2 ${
+                  currentPageName === 'Dashboard' 
+                    ? 'text-cyan-400' 
+                    : 'text-slate-300 hover:text-white'
+                }`}
+              >
+                <LayoutDashboard className="w-4 h-4" />
+                {t.dashboard}
               </Link>
               <Link 
                 to={createPageUrl('Consultation')} 
@@ -113,6 +126,13 @@ export default function Layout({ children, currentPageName }) {
                 className="block text-slate-300 hover:text-white py-2"
               >
                 {t.home}
+              </Link>
+              <Link 
+                to={createPageUrl('Dashboard')}
+                onClick={() => setMobileMenuOpen(false)}
+                className="block text-slate-300 hover:text-white py-2"
+              >
+                {t.dashboard}
               </Link>
               <Link 
                 to={createPageUrl('Consultation')}
