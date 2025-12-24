@@ -14,13 +14,39 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import MessageBubble from '@/components/chat/MessageBubble';
 import TopicCard from '@/components/chat/TopicCard';
+import PersonaSelector from '@/components/chat/PersonaSelector';
+import { base44 } from '@/api/base44Client';
+import { useQuery } from '@tanstack/react-query';
 
 export default function Consultation({ language = 'pt-BR' }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [paradoxResolutions, setParadoxResolutions] = useState([]);
+  const [selectedPersona, setSelectedPersona] = useState('professor');
   const messagesEndRef = useRef(null);
+
+  // Fetch user profile for access level
+  const { data: user } = useQuery({
+    queryKey: ['current-user'],
+    queryFn: () => base44.auth.me(),
+  });
+
+  const { data: userProfile } = useQuery({
+    queryKey: ['user-profile', user?.email],
+    queryFn: async () => {
+      const profiles = await base44.entities.UserProfile.filter({ created_by: user.email });
+      return profiles[0] || null;
+    },
+    enabled: !!user?.email,
+  });
+
+  // Set persona from profile
+  useEffect(() => {
+    if (userProfile?.preferred_persona) {
+      setSelectedPersona(userProfile.preferred_persona);
+    }
+  }, [userProfile]);
 
   const content = {
     'pt-BR': {
@@ -134,6 +160,22 @@ export default function Consultation({ language = 'pt-BR' }) {
     
     // Simulate AI response (replace with actual API call)
     setTimeout(() => {
+      // Generate persona-specific response
+      const personaResponses = {
+        professor: {
+          'pt-BR': `Prezado estudante,\n\nVamos desdobrar essa questão em camadas mais simples para facilitar a compreensão.\n\n**Pense nos BRICS como uma orquestra sem maestro único**\n\nImagine cinco instrumentistas (Brasil, Rússia, Índia, China e África do Sul) que decidiram tocar juntos, mas cada um tem sua própria partitura. Não há um regente central — e isso é proposital.\n\n**As "Três Coroas" do Brasil — uma metáfora útil:**\n\n1. 🌾 **Alimentos**: Somos a "Arábia Saudita dos grãos" — controlamos o estoque global de soja, milho e proteína animal.\n2. ⚡ **Energia**: Transição energética? O Brasil tem matriz limpa, biodiesel e potencial eólico/solar imbatível.\n3. 🌱 **Sustentabilidade**: O mundo precisará de "créditos de carbono" — e temos a Amazônia como ativo estratégico.\n\n**Por que isso importa?**\n\nEm termos simples: enquanto o mundo discute ideologia, o Brasil tem recursos tangíveis. Nossa estratégia deve ser pragmática — "surfar três ondas" (EUA, China, Europa) sem amarras ideológicas.\n\nEspero ter esclarecido. Estou à disposição para aprofundar qualquer ponto.\n\nCordialmente,\nMarcos Prado Troyjo`,
+          'en-US': `Dear student,\n\nLet's unpack this question in simpler layers to facilitate understanding.\n\n**Think of BRICS as an orchestra without a single conductor**\n\nImagine five instrumentalists (Brazil, Russia, India, China, and South Africa) who decided to play together, but each has their own score. There's no central conductor — and this is intentional.\n\n**Brazil's "Three Crowns" — a useful metaphor:**\n\n1. 🌾 **Food**: We are the "Saudi Arabia of grains" — we control the global stock of soybeans, corn, and animal protein.\n2. ⚡ **Energy**: Energy transition? Brazil has a clean matrix, biodiesel, and unbeatable wind/solar potential.\n3. 🌱 **Sustainability**: The world will need "carbon credits" — and we have the Amazon as a strategic asset.\n\n**Why does this matter?**\n\nIn simple terms: while the world debates ideology, Brazil has tangible resources. Our strategy should be pragmatic — "surf three waves" (USA, China, Europe) without ideological ties.\n\nI hope this clarifies. I remain available to deepen any point.\n\nCordially,\nMarcos Prado Troyjo`
+        },
+        analyst: {
+          'pt-BR': `**POLICY BRIEF — ANÁLISE QUANTITATIVA**\n\n**Decomposição Setorial: Vantagens Comparativas Reveladas (VCR)**\n\n| Setor | VCR Index | Participação Global | Tendência 2025 |\n|-------|-----------|---------------------|----------------|\n| Soja | 4.2 | 38% | ↑ Expansão |\n| Carnes | 3.8 | 21% | ↗ Estável |\n| Etanol | 5.1 | 45% | ↑ Alta demanda |\n\n**Análise Geoeconômica — Triangulação Estratégica:**\n\n1. **EUA (Trade Partner #2):** Relação assimétrica mas estável. Risco: protecionismo agrícola (Farm Bill 2024).\n2. **China (Trade Partner #1):** 32% das exportações brasileiras. Risco: desaceleração imobiliária afeta demanda por commodities.\n3. **UE (Trade Partner #3):** Acordo MERCOSUL-UE travado. Oportunidade: pressão francesa vs. pragmatismo alemão.\n\n**Modelagem de Cenários (Monte Carlo, 10k iterações):**\n- Prob(Recessão Global 2025) = 28%\n- Prob(China >5% GDP) = 62%\n- Impacto no PIB BR: elasticidade de +0.4 para cada 1% de crescimento chinês.\n\n**Recomendação Estratégica:**\nDiversificar destinos de exportação. Priorizar acordos bilaterais com ASEAN e África (crescimento demográfico = demanda estrutural).\n\n**Marcos Prado Troyjo**\n*Ex-Presidente, Banco dos BRICS*`,
+          'en-US': `**POLICY BRIEF — QUANTITATIVE ANALYSIS**\n\n**Sectoral Decomposition: Revealed Comparative Advantages (RCA)**\n\n| Sector | RCA Index | Global Share | 2025 Trend |\n|--------|-----------|--------------|------------|\n| Soy | 4.2 | 38% | ↑ Expansion |\n| Meat | 3.8 | 21% | ↗ Stable |\n| Ethanol | 5.1 | 45% | ↑ High demand |\n\n**Geoeconomic Analysis — Strategic Triangulation:**\n\n1. **USA (Trade Partner #2):** Asymmetric but stable relationship. Risk: agricultural protectionism (Farm Bill 2024).\n2. **China (Trade Partner #1):** 32% of Brazilian exports. Risk: real estate slowdown affects commodity demand.\n3. **EU (Trade Partner #3):** MERCOSUR-EU deal stalled. Opportunity: French pressure vs. German pragmatism.\n\n**Scenario Modeling (Monte Carlo, 10k iterations):**\n- Prob(Global Recession 2025) = 28%\n- Prob(China >5% GDP) = 62%\n- Impact on BR GDP: elasticity of +0.4 for each 1% of Chinese growth.\n\n**Strategic Recommendation:**\nDiversify export destinations. Prioritize bilateral agreements with ASEAN and Africa (demographic growth = structural demand).\n\n**Marcos Prado Troyjo**\n*Former President, BRICS Bank*`
+        },
+        diplomat: {
+          'pt-BR': `Excelentíssimo interlocutor,\n\nÉ com especial apreço que recebo Vossa consulta, a qual toca em aspectos nevrálgicos da reconfiguração geoeconômica contemporânea.\n\nPermita-me, com a devida vênia, tecer algumas considerações que julgo pertinentes ao esclarecimento da matéria em tela.\n\n**Sobre a Arquitetura Institucional dos BRICS**\n\nOs BRICS representam, em sua essência, uma plataforma de coordenação entre economias emergentes que, embora heterogêneas em suas estruturas políticas e trajetórias históricas, convergem no propósito comum de reformular a governança global.\n\nCabe aqui destacar que não se trata de um bloco antagônico às instituições de Bretton Woods, mas sim de um complemento necessário — um "contrapeso construtivo", por assim dizer.\n\n**A Diplomacia Econômica Brasileira — Princípios Cardeais:**\n\n1. **Universalismo**: Manter canais abertos com todos os polos de poder — Washington, Pequim, Bruxelas — sem alinhamento automático.\n2. **Pragmatismo Comercial**: Priorizar ganhos concretos sobre posicionamentos ideológicos. O comércio não deve ser refém da geopolítica.\n3. **Cooperação Sul-Sul**: Fortalecer laços com África e América Latina, respeitando soberanias nacionais.\n\n**Reflexão Final**\n\nA questão que Vossa Excelência apresenta demanda não apenas análise técnica, mas também sensibilidade diplomática. O Brasil, por sua tradição não-confrontacional e vocação mediadora, está singularmente posicionado para exercer papel de "ponte" entre blocos rivais.\n\nRenovo votos de alta estima e consideração,\n\n**Embaixador Marcos Prado Troyjo**\n*Ex-Presidente do Novo Banco de Desenvolvimento (NDB-BRICS)*\n*Professor Associado, Columbia University*`,
+          'en-US': `Most esteemed interlocutor,\n\nIt is with particular appreciation that I receive your consultation, which touches on critical aspects of contemporary geoeconomic reconfiguration.\n\nAllow me, with due respect, to offer some considerations that I deem pertinent to clarifying the matter at hand.\n\n**On the Institutional Architecture of BRICS**\n\nBRICS represents, in essence, a coordination platform among emerging economies that, while heterogeneous in their political structures and historical trajectories, converge on the common purpose of reformulating global governance.\n\nIt should be noted that this is not an antagonistic bloc to Bretton Woods institutions, but rather a necessary complement — a "constructive counterweight," so to speak.\n\n**Brazilian Economic Diplomacy — Cardinal Principles:**\n\n1. **Universalism**: Maintain open channels with all power poles — Washington, Beijing, Brussels — without automatic alignment.\n2. **Commercial Pragmatism**: Prioritize concrete gains over ideological positions. Trade should not be hostage to geopolitics.\n3. **South-South Cooperation**: Strengthen ties with Africa and Latin America, respecting national sovereignties.\n\n**Final Reflection**\n\nThe question Your Excellency presents demands not only technical analysis but also diplomatic sensitivity. Brazil, by its non-confrontational tradition and mediating vocation, is uniquely positioned to play a "bridge" role between rival blocs.\n\nI renew vows of high esteem and consideration,\n\n**Ambassador Marcos Prado Troyjo**\n*Former President, New Development Bank (NDB-BRICS)*\n*Associate Professor, Columbia University*`
+        }
+      };
+
       if (shouldTriggerParadox) {
         // Generate paradox scenario
         const paradoxScenario = language === 'pt-BR' ? {
@@ -169,9 +211,7 @@ export default function Consultation({ language = 'pt-BR' }) {
         setIsLoading(false);
         return;
       }
-      const sampleResponse = language === 'pt-BR'
-      ? `Prezado interlocutor,\n\nPermita-me contextualizar sua pergunta no cenário atual. A questão que você levanta toca em aspectos fundamentais da reconfiguração geoeconômica global.\n\n**Três pontos centrais:**\n\n1. **Contexto Histórico**: Estamos atravessando um "time-out" na globalização, um momento de reavaliação das cadeias globais de valor.\n\n2. **Competitividade Sistêmica**: O Brasil possui vantagens comparativas únicas - somos a "Arábia Saudita dos alimentos" e detemos as três coroas estratégicas: alimentos, energia e sustentabilidade.\n\n3. **Diplomacia Pragmática**: A estratégia ótima é "surfar três ondas" simultaneamente - EUA, China e União Europeia - sem viés ideológico, com foco em ganhos comerciais concretos.\n\nEstou à disposição para aprofundar qualquer um desses aspectos.\n\nCom distintíssima consideração,\nMarcos Prado Troyjo`
-      : `Dear interlocutor,\n\nAllow me to contextualize your question within the current scenario. The issue you raise touches on fundamental aspects of the global geoeconomic reconfiguration.\n\n**Three central points:**\n\n1. **Historical Context**: We are going through a "time-out" in globalization, a moment of reassessment of global value chains.\n\n2. **Systemic Competitiveness**: Brazil has unique comparative advantages - we are the "Saudi Arabia of food" and hold three strategic crowns: food, energy, and sustainability.\n\n3. **Pragmatic Diplomacy**: The optimal strategy is to "surf three waves" simultaneously - USA, China, and European Union - without ideological bias, focusing on concrete commercial gains.\n\nI remain at your disposal to deepen any of these aspects.\n\nWith distinguished consideration,\nMarcos Prado Troyjo`;
+      const sampleResponse = personaResponses[selectedPersona][language];
 
       // Simulate CRV scoring and audit trail
       const crvScore = {
@@ -290,19 +330,30 @@ export default function Consultation({ language = 'pt-BR' }) {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="lg:col-span-1"
           >
-            <div className="sticky top-28">
-              <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                <BarChart3 className="w-5 h-5 text-cyan-400" />
-                {t.quickTopics}
-              </h3>
-              <div className="space-y-3">
-                {t.topics.map((topic, index) => (
-                  <TopicCard
-                    key={index}
-                    topic={topic}
-                    onClick={() => handleTopicClick(topic.prompt)}
-                  />
-                ))}
+            <div className="sticky top-28 space-y-6">
+              {/* Persona Selector */}
+              <PersonaSelector
+                selectedPersona={selectedPersona}
+                onPersonaChange={setSelectedPersona}
+                accessLevel={userProfile?.access_level || 'basic'}
+                language={language}
+              />
+
+              {/* Quick Topics */}
+              <div>
+                <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                  <BarChart3 className="w-5 h-5 text-cyan-400" />
+                  {t.quickTopics}
+                </h3>
+                <div className="space-y-3">
+                  {t.topics.map((topic, index) => (
+                    <TopicCard
+                      key={index}
+                      topic={topic}
+                      onClick={() => handleTopicClick(topic.prompt)}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
           </motion.div>
