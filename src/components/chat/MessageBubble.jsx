@@ -7,7 +7,7 @@ import CRVBadge from './CRVBadge';
 import AuditTrailModal from './AuditTrailModal';
 import ParadoxResolution from './ParadoxResolution';
 
-export default function MessageBubble({ message, language = 'pt-BR', onParadoxResolve }) {
+export default function MessageBubble({ message, messageIndex, language = 'pt-BR', onParadoxResolve, onRate }) {
   const isUser = message.role === 'user';
   const [auditTrailOpen, setAuditTrailOpen] = useState(false);
   
@@ -116,15 +116,27 @@ export default function MessageBubble({ message, language = 'pt-BR', onParadoxRe
         )}
       </div>
 
-      {/* Audit Trail Modal */}
-      {!isUser && message.sources && (
-        <AuditTrailModal
-          isOpen={auditTrailOpen}
-          onClose={() => setAuditTrailOpen(false)}
-          sources={message.sources}
+      {/* Rating for assistant responses */}
+      {!isUser && !isParadox && onRate && (
+        <ResponseRating
+          messageIndex={messageIndex}
+          initialRating={message.rating}
+          initialFeedback={message.feedback}
+          onRate={onRate}
           language={language}
         />
       )}
-    </div>
-  );
-}
+      </div>
+
+      {/* Audit Trail Modal */}
+      {!isUser && message.sources && (
+      <AuditTrailModal
+        isOpen={auditTrailOpen}
+        onClose={() => setAuditTrailOpen(false)}
+        sources={message.sources}
+        language={language}
+      />
+      )}
+      </div>
+      );
+      }
