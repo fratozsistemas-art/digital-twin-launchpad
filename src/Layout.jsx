@@ -92,6 +92,16 @@ export default function Layout({ children, currentPageName }) {
                 {t.consultation}
               </Link>
               <Link 
+                to={createPageUrl('KnowledgeBase')} 
+                className={`text-sm font-medium transition-colors ${
+                  currentPageName === 'KnowledgeBase' 
+                    ? 'text-cyan-400' 
+                    : 'text-slate-300 hover:text-white'
+                }`}
+              >
+                {t.knowledgeBase}
+              </Link>
+              <Link 
                 to={createPageUrl('DataSources')} 
                 className={`text-sm font-medium transition-colors ${
                   currentPageName === 'DataSources' 
