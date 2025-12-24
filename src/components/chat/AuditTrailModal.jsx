@@ -6,6 +6,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { FileText, Database, Globe, TrendingUp, Building, CheckCircle, ExternalLink } from 'lucide-react';
+import SentimentScore from '../sentiment/SentimentScore';
 
 export default function AuditTrailModal({ isOpen, onClose, sources, language = 'pt-BR' }) {
   const content = {
@@ -124,6 +125,11 @@ export default function AuditTrailModal({ isOpen, onClose, sources, language = '
                               <span className="text-xs text-green-400 font-medium">
                                 {source.confidence}% {t.confidence}
                               </span>
+                            </div>
+                          )}
+                          {source.sentiment && (
+                            <div className="mt-1">
+                              <SentimentScore sentiment={source.sentiment} size="small" language={language} />
                             </div>
                           )}
                         </div>

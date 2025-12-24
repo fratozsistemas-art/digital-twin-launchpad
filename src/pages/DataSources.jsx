@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Database, Plus, Shield, Lock, CheckCircle } from 'lucide-react';
+import { Database, Plus, Shield, Lock, CheckCircle, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import DataSourceUploader from '@/components/data-sources/DataSourceUploader';
 import DataSourceList from '@/components/data-sources/DataSourceList';
+import SentimentDashboard from '@/components/sentiment/SentimentDashboard';
 
 export default function DataSourcesPage({ language = 'pt-BR' }) {
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
@@ -17,6 +20,14 @@ export default function DataSourcesPage({ language = 'pt-BR' }) {
       title: 'Fontes de Dados Personalizadas',
       subtitle: 'Conecte seus próprios dados para análises estratégicas enriquecidas',
       addSource: 'Adicionar Fonte',
+      tabs: {
+        sources: 'Fontes',
+        sentiment: 'Sentimento'
+      },
+      manageSources: 'Gerenciar Fontes',
+      analyzingAll: 'Analisando todas as fontes...',
+      analyzeSuccess: 'Análise de sentimento concluída!',
+      analyzeError: 'Erro ao analisar sentimento',
       features: [
         {
           icon: Shield,
@@ -39,6 +50,14 @@ export default function DataSourcesPage({ language = 'pt-BR' }) {
       title: 'Custom Data Sources',
       subtitle: 'Connect your own data for enriched strategic analyses',
       addSource: 'Add Source',
+      tabs: {
+        sources: 'Sources',
+        sentiment: 'Sentiment'
+      },
+      manageSources: 'Manage Sources',
+      analyzingAll: 'Analyzing all sources...',
+      analyzeSuccess: 'Sentiment analysis completed!',
+      analyzeError: 'Error analyzing sentiment',
       features: [
         {
           icon: Shield,
@@ -83,6 +102,33 @@ export default function DataSourcesPage({ language = 'pt-BR' }) {
     },
   });
 
+  // Analyze sentiment mutation
+  const analyzeSentimentMutation = useMutation({
+    mutationFn: async (dataSourceId) => {
+      const response = await base44.functions.invoke('analyzeSentiment', { dataSourceId });
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['data-sources'] });
+    }
+  });
+
+  // Analyze all sources
+  const handleAnalyzeAll = async () => {
+    if (!dataSources || dataSources.length === 0) return;
+    
+    toast.promise(
+      Promise.all(
+        dataSources.map(ds => analyzeSentimentMutation.mutateAsync(ds.id))
+      ),
+      {
+        loading: t.analyzingAll,
+        success: t.analyzeSuccess,
+        error: t.analyzeError
+      }
+    );
+  };
+
   return (
     <div className="min-h-screen py-12">
       <div className="max-w-7xl mx-auto px-6">
@@ -122,35 +168,62 @@ export default function DataSourcesPage({ language = 'pt-BR' }) {
           ))}
         </motion.div>
 
-        {/* Main Content */}
+        {/* Main Content with Tabs */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-slate-900/50 rounded-2xl border border-slate-800 p-8"
         >
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-white">{language === 'pt-BR' ? 'Gerenciar Fontes' : 'Manage Sources'}</h2>
-            <Button
-              onClick={() => setUploadDialogOpen(true)}
-              className="bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              {t.addSource}
-            </Button>
-          </div>
+          <Tabs defaultValue="sources" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 bg-slate-900/50 border border-slate-800 mb-6">
+              <TabsTrigger value="sources">
+                <Database className="w-4 h-4 mr-2" />
+                {t.tabs.sources}
+              </TabsTrigger>
+              <TabsTrigger value="sentiment">
+                <TrendingUp className="w-4 h-4 mr-2" />
+                {t.tabs.sentiment}
+              </TabsTrigger>
+            </TabsList>
 
-          {isLoading ? (
-            <div className="text-center py-12">
-              <div className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto"></div>
-            </div>
-          ) : (
-            <DataSourceList
-              dataSources={dataSources}
-              onDelete={(id) => deleteMutation.mutate(id)}
-              language={language}
-            />
-          )}
+            <TabsContent value="sources" className="mt-0">
+              <div className="bg-slate-900/50 rounded-2xl border border-slate-800 p-8">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-bold text-white">{t.manageSources}</h2>
+                  <Button
+                    onClick={() => setUploadDialogOpen(true)}
+                    className="bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    {t.addSource}
+                  </Button>
+                </div>
+
+                {isLoading ? (
+                  <div className="text-center py-12">
+                    <div className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto"></div>
+                  </div>
+                ) : (
+                  <DataSourceList
+                    dataSources={dataSources}
+                    onDelete={(id) => deleteMutation.mutate(id)}
+                    language={language}
+                  />
+                )}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="sentiment" className="mt-0">
+              <div className="bg-slate-900/50 rounded-2xl border border-slate-800 p-8">
+                <SentimentDashboard
+                  dataSources={dataSources || []}
+                  onAnalyze={handleAnalyzeAll}
+                  isAnalyzing={analyzeSentimentMutation.isPending}
+                  language={language}
+                />
+              </div>
+            </TabsContent>
+          </Tabs>
         </motion.div>
 
         {/* Upload Dialog */}
