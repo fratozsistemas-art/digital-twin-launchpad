@@ -17,6 +17,7 @@ export default function Layout({ children, currentPageName }) {
       integrations: 'Integrações',
       governance: 'Governança',
       about: 'Sobre',
+      status: 'Status',
       language: 'Idioma'
     },
     'en-US': {
@@ -28,6 +29,7 @@ export default function Layout({ children, currentPageName }) {
       integrations: 'Integrations',
       governance: 'Governance',
       about: 'About',
+      status: 'Status',
       language: 'Language'
     }
   };
@@ -141,6 +143,16 @@ export default function Layout({ children, currentPageName }) {
               >
                 {t.about}
               </Link>
+              <Link 
+                to={createPageUrl('ProjectStatus')} 
+                className={`text-sm font-medium transition-colors ${
+                  currentPageName === 'ProjectStatus' 
+                    ? 'text-cyan-400' 
+                    : 'text-slate-300 hover:text-white'
+                }`}
+              >
+                {t.status}
+              </Link>
               
               {/* Language Toggle */}
               <button
@@ -223,6 +235,13 @@ export default function Layout({ children, currentPageName }) {
                 className="block text-slate-300 hover:text-white py-2"
               >
                 {t.about}
+              </Link>
+              <Link 
+                to={createPageUrl('ProjectStatus')}
+                onClick={() => setMobileMenuOpen(false)}
+                className="block text-slate-300 hover:text-white py-2"
+              >
+                {t.status}
               </Link>
               <button
                 onClick={toggleLanguage}

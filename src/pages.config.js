@@ -7,6 +7,7 @@ import GovernancePanel from './pages/GovernancePanel';
 import Home from './pages/Home';
 import Profile from './pages/Profile';
 import KnowledgeBase from './pages/KnowledgeBase';
+import ProjectStatus from './pages/ProjectStatus';
 import __Layout from './Layout.jsx';
 
 
@@ -20,6 +21,7 @@ export const PAGES = {
     "Home": Home,
     "Profile": Profile,
     "KnowledgeBase": KnowledgeBase,
+    "ProjectStatus": ProjectStatus,
 }
 
 export const pagesConfig = {
