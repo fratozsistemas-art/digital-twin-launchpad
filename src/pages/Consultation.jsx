@@ -19,6 +19,8 @@ import TopicCard from '@/components/chat/TopicCard';
 import PersonaSelector from '@/components/chat/PersonaSelector';
 import FolderManager from '@/components/consultation/FolderManager';
 import ShareDialog from '@/components/consultation/ShareDialog';
+import DeepDiveSuggestions from '@/components/consultation/DeepDiveSuggestions';
+import PersonaInsights from '@/components/consultation/PersonaInsights';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
@@ -31,6 +33,9 @@ export default function Consultation({ language = 'pt-BR' }) {
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [currentFolderId, setCurrentFolderId] = useState(null);
   const [currentConsultationId, setCurrentConsultationId] = useState(null);
+  const [deepDiveSuggestions, setDeepDiveSuggestions] = useState([]);
+  const [personaInsights, setPersonaInsights] = useState(null);
+  const [adaptiveParams, setAdaptiveParams] = useState(null);
   const messagesEndRef = useRef(null);
   const queryClient = useQueryClient();
 
@@ -162,6 +167,23 @@ export default function Consultation({ language = 'pt-BR' }) {
     setMessages(prev => [...prev, userMessage]);
     setInput('');
     setIsLoading(true);
+
+    // Call adaptive persona engine
+    try {
+      const adaptiveResponse = await base44.functions.invoke('adaptivePersona', {
+        query: input,
+        currentPersona: selectedPersona,
+        consultationHistory: messages
+      });
+
+      if (adaptiveResponse.data) {
+        setAdaptiveParams(adaptiveResponse.data.adaptiveParams);
+        setDeepDiveSuggestions(adaptiveResponse.data.deepDiveSuggestions || []);
+        setPersonaInsights(adaptiveResponse.data.personaInsights || null);
+      }
+    } catch (error) {
+      console.error('Adaptive persona error:', error);
+    }
 
     // Randomly decide if this query triggers a paradox (30% chance for demo)
     const shouldTriggerParadox = Math.random() < 0.3 && input.toLowerCase().includes('brasil');
@@ -362,6 +384,23 @@ export default function Consultation({ language = 'pt-BR' }) {
                 accessLevel={userProfile?.access_level || 'basic'}
                 language={language}
               />
+
+              {/* Persona Insights */}
+              {personaInsights && (
+                <PersonaInsights
+                  insights={personaInsights}
+                  language={language}
+                />
+              )}
+
+              {/* Deep Dive Suggestions */}
+              {deepDiveSuggestions.length > 0 && (
+                <DeepDiveSuggestions
+                  suggestions={deepDiveSuggestions}
+                  onSelectTopic={(topic) => setInput(`Tell me more about: ${topic}`)}
+                  language={language}
+                />
+              )}
 
               {/* Quick Topics */}
               <div>
