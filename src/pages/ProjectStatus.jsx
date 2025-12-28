@@ -155,36 +155,6 @@ export default function ProjectStatus({ language = 'pt-BR' }) {
   ];
 
   const implemented = viewMode === 'baseline' ? baselineImplemented : currentImplemented;
-    {
-      category: language === 'pt-BR' ? '📊 Governança & Qualidade' : '📊 Governance & Quality',
-      items: [
-        { icon: Shield, name: language === 'pt-BR' ? 'CRV Scoring (Confidence, Risk, Value)' : 'CRV Scoring (Confidence, Risk, Value)', status: 'complete' },
-        { icon: FileText, name: 'Audit Trail (Rastreabilidade de Fontes)', status: 'complete' },
-        { icon: Zap, name: language === 'pt-BR' ? 'Sistema de Resolução de Paradoxos' : 'Paradox Resolution System', status: 'complete' },
-        { icon: TrendingUp, name: language === 'pt-BR' ? 'Rating & Feedback de Respostas' : 'Response Rating & Feedback', status: 'complete' },
-        { icon: Lock, name: 'Governance Panel (CRV Settings)', status: 'complete' }
-      ]
-    },
-    {
-      category: language === 'pt-BR' ? '📚 Base de Conhecimento' : '📚 Knowledge Base',
-      items: [
-        { icon: Sparkles, name: language === 'pt-BR' ? 'Neologismos Proprietários (Trampulência, Três Coroas, Policrise, etc.)' : 'Proprietary Neologisms (Trampulence, Three Crowns, Polycrisis, etc.)', status: 'complete' },
-        { icon: Clock, name: language === 'pt-BR' ? 'Timeline de Evolução Conceitual (desde 2002)' : 'Concept Evolution Timeline (since 2002)', status: 'complete' },
-        { icon: Target, name: language === 'pt-BR' ? 'Trajetória Profissional (Prêmios, Posições, Publicações)' : 'Professional Journey (Awards, Positions, Publications)', status: 'complete' },
-        { icon: Brain, name: language === 'pt-BR' ? 'Arquitetura Cognitiva Documentada' : 'Documented Cognitive Architecture', status: 'complete' }
-      ]
-    },
-    {
-      category: language === 'pt-BR' ? '🗂️ Organização & Gestão' : '🗂️ Organization & Management',
-      items: [
-        { icon: FileText, name: language === 'pt-BR' ? 'Sistema de Pastas para Consultas' : 'Folder System for Consultations', status: 'complete' },
-        { icon: Users, name: language === 'pt-BR' ? 'Compartilhamento de Consultas' : 'Consultation Sharing', status: 'complete' },
-        { icon: Database, name: language === 'pt-BR' ? 'Gestão de Data Sources' : 'Data Sources Management', status: 'complete' },
-        { icon: TrendingUp, name: language === 'pt-BR' ? 'Análise de Sentimento (UI)' : 'Sentiment Analysis (UI)', status: 'complete' },
-        { icon: Globe2, name: language === 'pt-BR' ? 'Integrações Externas (UI)' : 'External Integrations (UI)', status: 'complete' }
-      ]
-    }
-  ];
 
   const baselineInProgress = [
     {
