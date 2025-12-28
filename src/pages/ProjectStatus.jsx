@@ -152,11 +152,11 @@ export default function ProjectStatus({ language = 'pt-BR' }) {
       ]
     },
     {
-      category: language === 'pt-BR' ? '📱 Canais Adicionais' : '📱 Additional Channels',
+      category: language === 'pt-BR' ? '📱 Canais de Comunicação' : '📱 Communication Channels',
       items: [
-        { icon: MessageSquare, name: 'WhatsApp Agent Integration', status: 'planned' },
-        { icon: Users, name: 'Microsoft Teams Bot', status: 'planned' },
-        { icon: Globe2, name: 'Slack Integration', status: 'planned' }
+        { icon: MessageSquare, name: language === 'pt-BR' ? 'WhatsApp Agent (Ativo com Personas Adaptativas)' : 'WhatsApp Agent (Active with Adaptive Personas)', status: 'complete' },
+        { icon: Users, name: language === 'pt-BR' ? 'Microsoft Teams Bot (Beta)' : 'Microsoft Teams Bot (Beta)', status: 'complete' },
+        { icon: Globe2, name: language === 'pt-BR' ? 'Slack Assistant (Configurado)' : 'Slack Assistant (Configured)', status: 'complete' }
       ]
     },
     {
@@ -191,10 +191,10 @@ export default function ProjectStatus({ language = 'pt-BR' }) {
   };
 
   const progressData = {
-    frontend: 85,
-    backend: 25,
-    integrations: 15,
-    governance: 70
+    frontend: 90,
+    backend: 35,
+    integrations: 40,
+    governance: 75
   };
 
   return (

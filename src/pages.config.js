@@ -8,6 +8,7 @@ import Home from './pages/Home';
 import Profile from './pages/Profile';
 import KnowledgeBase from './pages/KnowledgeBase';
 import ProjectStatus from './pages/ProjectStatus';
+import AgentChannels from './pages/AgentChannels';
 import __Layout from './Layout.jsx';
 
 
@@ -22,6 +23,7 @@ export const PAGES = {
     "Profile": Profile,
     "KnowledgeBase": KnowledgeBase,
     "ProjectStatus": ProjectStatus,
+    "AgentChannels": AgentChannels,
 }
 
 export const pagesConfig = {

@@ -16,11 +16,12 @@ export default function Layout({ children, currentPageName }) {
       dataSources: 'Fontes de Dados',
       integrations: 'Integrações',
       governance: 'Governança',
+      agents: 'Agentes',
       about: 'Sobre',
       status: 'Status',
       language: 'Idioma'
-    },
-    'en-US': {
+      },
+      'en-US': {
       home: 'Home',
       dashboard: 'Dashboard',
       consultation: 'Consultation',
@@ -28,10 +29,11 @@ export default function Layout({ children, currentPageName }) {
       dataSources: 'Data Sources',
       integrations: 'Integrations',
       governance: 'Governance',
+      agents: 'Agents',
       about: 'About',
       status: 'Status',
       language: 'Language'
-    }
+      }
   };
 
   const t = translations[language];
@@ -134,6 +136,16 @@ export default function Layout({ children, currentPageName }) {
                 {t.governance}
               </Link>
               <Link 
+                to={createPageUrl('AgentChannels')} 
+                className={`text-sm font-medium transition-colors ${
+                  currentPageName === 'AgentChannels' 
+                    ? 'text-cyan-400' 
+                    : 'text-slate-300 hover:text-white'
+                }`}
+              >
+                {t.agents}
+              </Link>
+              <Link 
                 to={createPageUrl('About')} 
                 className={`text-sm font-medium transition-colors ${
                   currentPageName === 'About' 
@@ -228,6 +240,13 @@ export default function Layout({ children, currentPageName }) {
                 className="block text-slate-300 hover:text-white py-2"
               >
                 {t.governance}
+              </Link>
+              <Link 
+                to={createPageUrl('AgentChannels')}
+                onClick={() => setMobileMenuOpen(false)}
+                className="block text-slate-300 hover:text-white py-2"
+              >
+                {t.agents}
               </Link>
               <Link 
                 to={createPageUrl('About')}
